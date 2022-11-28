@@ -28,15 +28,12 @@ model = os.path.join(current_path, 'static\model.pkl')
 
 # loading class_to_num_category
 
-predictor_model = load_model(r'static\dogbreed.h5')
 
-with open(model, 'rb') as handle:
 
-    model = pickle.load(open('model.pkl', 'rb'))
+model = pickle.load(open('model.pkl', 'rb'))
 
 # loading the feature extractor model
 
-feature_extractor = load_model(r'static\feature_extractor.h5')
 
 def predictor(img_path,uploaded_file): # here image is file name 
 
