@@ -27,9 +27,9 @@ model = pickle.load(open('static/model.pkl', 'rb'))
 # loading the feature extractor model
 
 
-def predictor(img_path): # here image is file name 
+def predictor(img_path,uploaded_file): # here image is file name 
 
-    prediction=model.predict(img_path)
+    prediction=model.predict(img_path).save('static/images/prediction/'+uploaded_file.name) 
     return  prediction
 0
 
@@ -41,20 +41,28 @@ from PIL import Image
 
 st.title('Baseball cap Identifier')
 
+def save_uploaded_file(uploaded_file):
+
+    try:
+
+        with open(os.path.join('static/images/upload/',uploaded_file.name),'wb') as f:
+
+            f.write(uploaded_file.getbuffer())
+
+        return 1    
+
+    except:
+
+        return 0
 uploaded_file = st.file_uploader("Upload Image")
 
 # text over upload button "Upload Image"
 
 if uploaded_file is not None:
 
+    if save_uploaded_file(uploaded_file): 
+        # display the image
+        prediction = predictor(os.path.join('static/images/upload/',uploaded_file.name),uploaded_file)
+        st.image('static/images/prediction/'+uploaded_file.name)
 
-    # display the image
-
-    display_image = Image.open(uploaded_file)
-
-    st.image(display_image)
-
-    prediction = predictor(display_image)
-    st.image(Image.open(prediction))
-
-    # deleting uploaded saved picture after prediction
+        # deleting uploaded saved picture after prediction
