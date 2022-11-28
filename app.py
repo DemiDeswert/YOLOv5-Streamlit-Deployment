@@ -20,15 +20,7 @@ import matplotlib.pyplot as plt
 
 import seaborn as sns
 
-current_path = os.getcwd()
-
 # getting the current path
-
-model = os.path.join(current_path, 'static\model.pkl')
-
-# loading class_to_num_category
-
-
 
 model = pickle.load(open('static/model.pkl', 'rb'))
 
@@ -37,16 +29,9 @@ model = pickle.load(open('static/model.pkl', 'rb'))
 
 def predictor(img_path,uploaded_file): # here image is file name 
 
-    img = load_img(img_path, target_size=(331,331))
-
-    img = img_to_array(img)
-
-    img = np.expand_dims(img,axis = 0)
-
-    model.predict(img, confidence=40, overlap=30).save('static/images/prediction/',uploaded_file.name)
-    prediction = Image.open('static/images/prediction/',uploaded_file.name)
-
-    return(prediction)
+    prediction=model.predict(img_path).save('static/images/prediction/prediction.jpg') 
+    return  prediction
+0
 
 sns.set_theme(style="darkgrid")
 
@@ -54,7 +39,7 @@ sns.set()
 
 from PIL import Image
 
-st.title('Dog Breed Classifier')
+st.title('Baseball cap Identifier')
 
 def save_uploaded_file(uploaded_file):
 
@@ -79,12 +64,8 @@ if uploaded_file is not None:
 
         # display the image
 
-        display_image = Image.open(uploaded_file)
-
-        st.image(display_image)
-
         prediction = predictor(os.path.join('static/images/upload/',uploaded_file.name),uploaded_file)
-        st.image(prediction)
+        st.image('static/images/prediction/prediction.jpg')
         os.remove('static/images/upload/'+uploaded_file.name)
 
         # deleting uploaded saved picture after prediction
