@@ -9,7 +9,6 @@ import pandas as pd
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import load_img,img_to_array
 from tensorflow.python.keras import utils
-from helper import *
 
 #importing all the helper fxn from helper.py which we will create later
 
