@@ -1,140 +1,94 @@
-import streamlit as st
-import torch
-from detect import detect
-from PIL import Image
-from io import *
-import glob
-from datetime import datetime
+import cv2
 import os
-import wget
-import time
+import numpy as np
+import pickle
+import tensorflow as tf
+from tensorflow.keras import layers
+from tensorflow.keras import models,utils
+import pandas as pd
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.image import load_img,img_to_array
+from tensorflow.python.keras import utils
+from helper import *
 
-## CFG
-cfg_model_path = "models/yourModel.pt" 
+#importing all the helper fxn from helper.py which we will create later
 
-cfg_enable_url_download = True
-if cfg_enable_url_download:
-    url = "https://archive.org/download/yoloTrained/yoloTrained.pt" #Configure this if you set cfg_enable_url_download to True
-    cfg_model_path = f"models/{url.split('/')[-1:][0]}" #config model path from url name
-## END OF CFG
+import streamlit as st
 
+import os
 
+import matplotlib.pyplot as plt
 
+import seaborn as sns
 
+current_path = os.getcwd()
 
+# getting the current path
 
-def imageInput(device, src):
-    
-    if src == 'Upload your own data.':
-        image_file = st.file_uploader("Upload An Image", type=['png', 'jpeg', 'jpg'])
-        col1, col2 = st.columns(2)
-        if image_file is not None:
-            img = Image.open(image_file)
-            with col1:
-                st.image(img, caption='Uploaded Image', use_column_width='always')
-            ts = datetime.timestamp(datetime.now())
-            imgpath = os.path.join('data/uploads', str(ts)+image_file.name)
-            outputpath = os.path.join('data/outputs', os.path.basename(imgpath))
-            with open(imgpath, mode="wb") as f:
-                f.write(image_file.getbuffer())
+model = os.path.join(current_path, 'static\model.pkl')
 
-            #call Model prediction--
-            model = torch.hub.load('ultralytics/yolov5', 'custom', path='models/yoloTrained.pt', force_reload=True) 
-            model.cuda() if device == 'cuda' else model.cpu()
-            pred = model(imgpath)
-            pred.render()  # render bbox in image
-            for im in pred.ims:
-                im_base64 = Image.fromarray(im)
-                im_base64.save(outputpath)
+# loading class_to_num_category
 
-            #--Display predicton
-            
-            img_ = Image.open(outputpath)
-            with col2:
-                st.image(img_, caption='Model Prediction(s)', use_column_width='always')
+predictor_model = load_model(r'static\dogbreed.h5')
 
-    elif src == 'From test set.': 
-        # Image selector slider
-        imgpath = glob.glob('data/images/*')
-        imgsel = st.slider('Select random images from test set.', min_value=1, max_value=len(imgpath), step=1) 
-        image_file = imgpath[imgsel-1]
-        submit = st.button("Predict!")
-        col1, col2 = st.columns(2)
-        with col1:
-            img = Image.open(image_file)
-            st.image(img, caption='Selected Image', use_column_width='always')
-        with col2:            
-            if image_file is not None and submit:
-                #call Model prediction--
-                model = torch.hub.load('ultralytics/yolov5', 'custom', path=cfg_model_path, force_reload=True) 
-                pred = model(image_file)
-                pred.render()  # render bbox in image
-                for im in pred.ims:
-                    im_base64 = Image.fromarray(im)
-                    im_base64.save(os.path.join('data/outputs', os.path.basename(image_file)))
-                #--Display predicton
-                    img_ = Image.open(os.path.join('data/outputs', os.path.basename(image_file)))
-                    st.image(img_, caption='Model Prediction(s)')
+with open(model, 'rb') as handle:
 
+    model = pickle.load(open('model.pkl', 'rb'))
 
+# loading the feature extractor model
 
+feature_extractor = load_model(r'static\feature_extractor.h5')
 
-def videoInput(device, src):
-    uploaded_video = st.file_uploader("Upload Video", type=['mp4', 'mpeg', 'mov'])
-    if uploaded_video != None:
+def predictor(img_path,uploaded_file): # here image is file name 
 
-        ts = datetime.timestamp(datetime.now())
-        imgpath = os.path.join('data/uploads', str(ts)+uploaded_video.name)
-        outputpath = os.path.join('data/video_output', os.path.basename(imgpath))
+    img = load_img(img_path, target_size=(331,331))
 
-        with open(imgpath, mode='wb') as f:
-            f.write(uploaded_video.read())  # save video to disk
+    img = img_to_array(img)
 
-        st_video = open(imgpath, 'rb')
-        video_bytes = st_video.read()
-        st.video(video_bytes)
-        st.write("Uploaded Video")
-        detect(weights=cfg_model_path, source=imgpath, device=0) if device == 'cuda' else detect(weights=cfg_model_path, source=imgpath, device='cpu')
-        st_video2 = open(outputpath, 'rb')
-        video_bytes2 = st_video2.read()
-        st.video(video_bytes2)
-        st.write("Model Prediction")
+    img = np.expand_dims(img,axis = 0)
 
+    model.predict(img, confidence=40, overlap=30).save('static/images/prediction/',uploaded_file.name)
+    prediction = Image.open('static/images/prediction/',uploaded_file.name)
 
-def main():
-    # -- Sidebar
-    st.sidebar.title('⚙️Options')
-    datasrc = st.sidebar.radio("Select input source.", ['From test set.', 'Upload your own data.'])
-    
-        
-                
-    option = st.sidebar.radio("Select input type.", ['Image', 'Video'])
-    if torch.cuda.is_available():
-        deviceoption = st.sidebar.radio("Select compute Device.", ['cpu', 'cuda'], disabled = False, index=1)
-    else:
-        deviceoption = st.sidebar.radio("Select compute Device.", ['cpu', 'cuda'], disabled = True, index=0)
-    # -- End of Sidebar
+    return(prediction)
 
-    st.header('📦Obstacle Detection')
-    st.subheader('👈🏽 Select options left-haned menu bar.')
-    st.sidebar.markdown("https://github.com/thepbordin/Obstacle-Detection-for-Blind-people-Deployment")
-    if option == "Image":    
-        imageInput(deviceoption, datasrc)
-    elif option == "Video": 
-        videoInput(deviceoption, datasrc)
+sns.set_theme(style="darkgrid")
 
-    
+sns.set()
 
-if __name__ == '__main__':
-  
-    main()
+from PIL import Image
 
-# Downlaod Model from url.    
-@st.cache
-def loadModel():
-    start_dl = time.time()
-    model_file = wget.download(url, out="models/")
-    finished_dl = time.time()
-    print(f"Model Downloaded, ETA:{finished_dl-start_dl}")
-if cfg_enable_url_download:
-    loadModel()
+st.title('Dog Breed Classifier')
+
+def save_uploaded_file(uploaded_file):
+
+    try:
+
+        with open(os.path.join('static/images/upload/',uploaded_file.name),'wb') as f:
+
+            f.write(uploaded_file.getbuffer())
+
+        return 1    
+
+    except:
+
+        return 0
+uploaded_file = st.file_uploader("Upload Image")
+
+# text over upload button "Upload Image"
+
+if uploaded_file is not None:
+
+    if save_uploaded_file(uploaded_file): 
+
+        # display the image
+
+        display_image = Image.open(uploaded_file)
+
+        st.image(display_image)
+
+        prediction = predictor(os.path.join('static/images/upload/',uploaded_file.name),uploaded_file)
+
+        os.remove('static/images/upload/'+uploaded_file.name)
+
+        # deleting uploaded saved picture after prediction
