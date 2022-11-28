@@ -64,6 +64,10 @@ if uploaded_file is not None:
 
         # display the image
 
+        display_image = Image.open(uploaded_file)
+
+        st.image(display_image)
+
         prediction = predictor(os.path.join('static/images/upload/',uploaded_file.name),uploaded_file)
         st.image('static/images/prediction/prediction.jpg')
         os.remove('static/images/upload/'+uploaded_file.name)
