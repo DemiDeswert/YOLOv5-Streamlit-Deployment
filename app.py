@@ -29,7 +29,7 @@ model = pickle.load(open('static/model.pkl', 'rb'))
 
 def predictor(img_path,uploaded_file): # here image is file name 
 
-    prediction=model.predict(img_path).save('static/images/prediction/prediction.jpg') 
+    prediction=model.predict(img_path)
     return  prediction
 0
 
@@ -60,16 +60,14 @@ uploaded_file = st.file_uploader("Upload Image")
 
 if uploaded_file is not None:
 
-    if save_uploaded_file(uploaded_file): 
 
-        # display the image
+    # display the image
 
-        display_image = Image.open(uploaded_file)
+    display_image = Image.open(uploaded_file)
 
-        st.image(display_image)
+    st.image(display_image)
 
-        prediction = predictor(os.path.join('static/images/upload/',uploaded_file.name),uploaded_file)
-        st.image('static/images/prediction/prediction.jpg')
-        os.remove('static/images/upload/'+uploaded_file.name)
+    prediction = predictor(display_image)
+    st.image(Image.open(prediction))
 
-        # deleting uploaded saved picture after prediction
+    # deleting uploaded saved picture after prediction
