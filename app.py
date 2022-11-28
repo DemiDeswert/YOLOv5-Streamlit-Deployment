@@ -30,7 +30,7 @@ model = os.path.join(current_path, 'static\model.pkl')
 
 
 
-model = pickle.load(open('model.pkl', 'rb'))
+model = pickle.load(open('static/model.pkl', 'rb'))
 
 # loading the feature extractor model
 
