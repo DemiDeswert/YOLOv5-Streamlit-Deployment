@@ -84,7 +84,7 @@ if uploaded_file is not None:
         st.image(display_image)
 
         prediction = predictor(os.path.join('static/images/upload/',uploaded_file.name),uploaded_file)
-
+        st.image(prediction)
         os.remove('static/images/upload/'+uploaded_file.name)
 
         # deleting uploaded saved picture after prediction
