@@ -123,7 +123,7 @@ def save_uploaded_file(uploaded_file):
     except:
 
         return 0
-uploaded_file = st.file_uploader("Upload Image",accept_multiple_files=True,type=['png','jpg','gif','jpeg'])
+uploaded_file = st.file_uploader("Upload Image",type=['png','jpg','gif','jpeg'])
 
 # text over upload button "Upload Image"
 
