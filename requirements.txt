@@ -1,6 +1,4 @@
-
 typing_extensions==3.7.4.3
-opencv-python-headless
 av==8.0.3
 requests==2.22.0
 Roboflow
