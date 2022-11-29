@@ -12,7 +12,7 @@ try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal  # type: ignore
-
+import cv2
 import av
 import matplotlib.pyplot as plt
 import numpy as np
@@ -101,12 +101,6 @@ def logo_detection():
     )
 
     ### Adding in the Streamlit and Roboflow logos to the sidebar
-    image = Image.open("./images/roboflow_logo.png")
-    st.sidebar.image(image, use_column_width=True)
-
-    image = Image.open("./images/streamlit_logo.png")
-    st.sidebar.image(image, use_column_width=True)
-
     ### Setting up the url and query parameters for roboflow endpoint
     # the overlap and confidence query parameters are set within the
     # RoboflowVideoProcessor class, normally they would be hardcoded here but
