@@ -10,4 +10,3 @@ Pillow==8.3.2
 streamlit_webrtc==0.23.3
 roboflow
 pickles
-pickle
