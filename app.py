@@ -1,23 +1,3 @@
-
-import cv2
-import os
-import numpy 
-import pickle
-import tensorflow as tf
-
-import pandas as pd
-import streamlit as st
-import torch
-import numpy as np
-#importing all the helper fxn from helper.py which we will create later
-from PIL import Image
-import streamlit as st
-import os
-import time
-# getting the current path
-from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
-import av
-import mediapipe as mp
 import asyncio
 import logging
 import logging.handlers
@@ -26,11 +6,8 @@ import threading
 import urllib.request
 from pathlib import Path
 from typing import List, NamedTuple
-
-model = pickle.load(open('static/model.pkl', 'rb'))
-
-# loading the feature extractor model
-
+import time
+import os
 try:
     from typing import Literal
 except ImportError:
@@ -58,6 +35,15 @@ from streamlit_webrtc import (
     WebRtcMode,
     webrtc_streamer,
 )
+model = pickle.load(open('static/model.pkl', 'rb'))
+
+# loading the feature extractor model
+
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal  # type: ignore
+
 
 ### setting up the logger to log messages created by the script to help debug in main()
 logger = logging.getLogger(__name__)
