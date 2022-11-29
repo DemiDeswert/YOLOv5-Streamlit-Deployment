@@ -14,7 +14,6 @@ except ImportError:
     from typing_extensions import Literal  # type: ignore
 
 import av
-import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
@@ -27,7 +26,7 @@ import io
 from PIL import Image
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
-
+import pickle
 from streamlit_webrtc import (
     AudioProcessorBase,
     ClientSettings,

@@ -16,3 +16,4 @@ mediapipe==0.8.9.1
 aiortc==1.2.0
 requests==2.22.0
 streamlit_webrtc==0.23.3
+pickle
