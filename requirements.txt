@@ -12,3 +12,4 @@ pickles
 werkzeug
 pickle5
 python-dotenv
+pyarrow
