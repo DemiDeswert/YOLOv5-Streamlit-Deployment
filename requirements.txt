@@ -11,3 +11,4 @@ streamlit_webrtc==0.23.3
 pickles
 werkzeug
 pickle5
+python-dotenv
