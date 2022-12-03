@@ -1,12 +1,7 @@
-import asyncio
+
 import logging
 import logging.handlers
-import queue
 import threading
-import urllib.request
-from pathlib import Path
-from typing import List, NamedTuple
-import time
 import os
 try:
     from typing import Literal
@@ -14,7 +9,6 @@ except ImportError:
     from typing_extensions import Literal  # type: ignore
 import cv2
 import av
-import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
 from aiortc.contrib.media import MediaPlayer
@@ -22,10 +16,8 @@ from aiortc.contrib.media import MediaPlayer
 import requests
 import base64
 from base64 import decodebytes
-import io
 from PIL import Image
 from PIL import Image, ImageDraw, ImageFont
-from io import BytesIO
 import pickle
 from streamlit_webrtc import (
     AudioProcessorBase,
