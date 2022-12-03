@@ -19,8 +19,9 @@ build/
 docs/_build/
 .vscode
 staticfiles
+.streamlit/
 # Coverage reports
 htmlcov/
 .coverage
 .coverage.*
-.streamlit/
+

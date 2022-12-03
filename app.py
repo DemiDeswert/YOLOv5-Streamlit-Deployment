@@ -26,7 +26,7 @@ from streamlit_webrtc import (
     WebRtcMode,
     webrtc_streamer,
 )
-model = pickle.load(open('static/model.pkl', 'rb'))
+model = pickle.load(open('model.pkl', 'rb'))
 
 # loading the feature extractor model
 
