@@ -106,12 +106,10 @@ def logo_detection():
     # RoboflowVideoProcessor class, normally they would be hardcoded here but
     # to get interactivity we had to add them after
     ROBOFLOW_SIZE = 720
-    url_base = "https://detect.roboflow.com/"
-    endpoint = "merged_logos/2"
+    url_base = "https://detect.roboflow.com/baseballcap/3?api_key=gifyELTiCBNUpgk9OCWI"
     ## remove random part and add your secret key here
     ## Create a .streamlit/secrets.toml with the entry, replacing YourKey with the key from Roboflow: api_key="YourKey"
     ## Don't commit secrets.toml. On Sharing, add the same line to ☰ -> Settings -> Secrets
-    access_token = f'?api_key={st.secrets["api_key"]}'
     format = "&format=json"
     headers = {"accept": "application/json"}
 
@@ -123,7 +121,6 @@ def logo_detection():
         "roboflow_logomark": "#1AFF1A",
         "roboflow_wordmark": "#582832",
     }
-
     class RoboflowVideoProcessor(VideoProcessorBase):
         _overlap = OVERLAP_THRESHOLD
         _confidence = CONFIDENCE_THRESHOLD
@@ -207,8 +204,6 @@ def logo_detection():
             overlap = f"&overlap={self._overlap}"
             confidence = f"&confidence={self._confidence}"
             parts.append(url_base)
-            parts.append(endpoint)
-            parts.append(access_token)
             parts.append(format)
             parts.append(overlap)
             parts.append(confidence)
