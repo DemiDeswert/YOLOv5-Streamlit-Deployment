@@ -281,13 +281,14 @@ def predictor(img_path,uploaded_file): # here image is file name
 
     prediction=model.predict(img_path).save('static/images/prediction/'+uploaded_file.name) 
     return  prediction
-0
 
 
 from PIL import Image
 
 st.title('Baseball cap Identifier')
-
+st.text("TEAM 8")
+st.text("Demi Deswert Bram Henderickx Bryan Van Herck")
+st.image('static/images/foto.png')
 def save_uploaded_file(uploaded_file):
 
     try:
